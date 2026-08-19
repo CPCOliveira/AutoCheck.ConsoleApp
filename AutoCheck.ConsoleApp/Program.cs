@@ -89,7 +89,7 @@ while (continuar)
 
                 Console.WriteLine($"\n--- {veiculo.Marca} {veiculo.Modelo} ({veiculo.Ano}) ---");
                 Console.WriteLine($"Pontuação: {pontuacaoObtida} de {pontuacaoMaxima} pontos possíveis");
-                Console.WriteLine($"Percentual de aprovação: {percentual}%");
+                Console.WriteLine($"Percentual de aprovação: {percentual:F1}%");
                 Console.WriteLine($"Classificação: {classificacao}");
 
                 List<ItemVistoria> criticos = motor.ObterItensCriticos(veiculo);
