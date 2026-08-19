@@ -11,11 +11,24 @@ public class ItemVistoria
         get => _status;
         set
         {
-            if (value != "Bom" && value != "Regular" && value != "Ruim")
+            string valor = value.Trim();
+
+            if (string.Equals(valor, "Bom", StringComparison.OrdinalIgnoreCase))
+            {
+                _status = "Bom";
+            }
+            else if (string.Equals(valor, "Regular", StringComparison.OrdinalIgnoreCase))
+            {
+                _status = "Regular";
+            }
+            else if (string.Equals(valor, "Ruim", StringComparison.OrdinalIgnoreCase))
+            {
+                _status = "Ruim";
+            }
+            else
             {
                 throw new ArgumentException($"Status inválido: '{value}'. Use 'Bom', 'Regular' ou 'Ruim'.");
             }
-            _status = value;
         }
     }
 

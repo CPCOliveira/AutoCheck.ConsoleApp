@@ -1,37 +1,133 @@
 ﻿using AutoCheck.ConsoleApp.Models;
 using AutoCheck.ConsoleApp.Services;
 
-Console.WriteLine("AutoCheck.ConsoleApp - motor de vistoria em construção");
+List<Veiculo> vistorias = new List<Veiculo>();
+MotorVistoria motor = new MotorVistoria();
 
-var carro = new Carro("Toyota", "Corolla", 2021, 45000, 4);
-carro.AdicionarItemVistoriado("Farol", "Bom");
-carro.AdicionarItemVistoriado("Motor", "Regular");
-var motor = new MotorVistoria();
-double percentual = motor.CalcularPercentualAprovacao(carro);
+bool continuar = true;
 
-var moto = new Moto("Honda", "CB 500", 2020, 12000, 500);
-var caminhao = new Caminhao("Volvo", "FH 540", 2019, 280000, 30.0, 3);
-
-
-
-Console.WriteLine("\n--- Checklist Carro ---");
-foreach (string item in carro.ObterChecklistObrigatorio())
-    Console.WriteLine($" - {item}");
-
-
-
-Console.WriteLine("\n--- Checklist Moto ---");
-foreach (string item in moto.ObterChecklistObrigatorio())
-    Console.WriteLine($" - {item}");
-
-Console.WriteLine("\n--- Checklist Caminhao ---");
-foreach (string item in caminhao.ObterChecklistObrigatorio())
-    Console.WriteLine($" - {item}");
-
-string classificacao = motor.ClassificarVeiculo(percentual);
-Console.WriteLine($"Classificação: {classificacao}");
-
-foreach (ItemVistoria item in motor.ObterItensAtencao(carro))
+while (continuar)
 {
-    Console.WriteLine(motor.GerarRecomendacao(item));
+    Console.WriteLine("\n=== AUTOCHECK - MENU PRINCIPAL ===");
+    Console.WriteLine("1 - Realizar Nova Vistoria");
+    Console.WriteLine("2 - Exibir Relatório das Vistorias");
+    Console.WriteLine("0 - Sair");
+    Console.Write("Escolha uma opção: ");
+    string opcao = Console.ReadLine();
+
+    if (opcao == "1")
+    {
+        Console.Write("Tipo de veículo (Carro, Moto, Caminhao): ");
+        string tipo = Console.ReadLine();
+
+        Console.Write("Marca: ");
+        string marca = Console.ReadLine();
+
+        Console.Write("Modelo: ");
+        string modelo = Console.ReadLine();
+
+        Console.Write("Ano: ");
+        int ano = int.Parse(Console.ReadLine());
+
+        Console.Write("Quilometragem: ");
+        double quilometragem = double.Parse(Console.ReadLine());
+
+        Veiculo veiculo = null;
+
+        if (tipo == "Carro")
+        {
+            Console.Write("Quantidade de portas: ");
+            int portas = int.Parse(Console.ReadLine());
+            veiculo = new Carro(marca, modelo, ano, quilometragem, portas);
+        }
+        else if (tipo == "Moto")
+        {
+            Console.Write("Cilindradas: ");
+            int cilindradas = int.Parse(Console.ReadLine());
+            veiculo = new Moto(marca, modelo, ano, quilometragem, cilindradas);
+        }
+        else if (tipo == "Caminhao")
+        {
+            Console.Write("Capacidade de carga (toneladas): ");
+            double capacidadeCarga = double.Parse(Console.ReadLine());
+            Console.Write("Quantidade de eixos: ");
+            int eixos = int.Parse(Console.ReadLine());
+            veiculo = new Caminhao(marca, modelo, ano, quilometragem, capacidadeCarga, eixos);
+        }
+        else
+        {
+            Console.WriteLine("Tipo de veículo inválido.");
+        }
+
+        if (veiculo != null)
+        {
+            foreach (string item in veiculo.ObterChecklistObrigatorio())
+            {
+                Console.Write($"Status do item '{item}' (Bom/Regular/Ruim): ");
+                string status = Console.ReadLine();
+                veiculo.AdicionarItemVistoriado(item, status);
+            }
+
+            vistorias.Add(veiculo);
+            Console.WriteLine("Vistoria registrada com sucesso!");
+        }
+    }
+    else if (opcao == "2")
+    {
+        if (vistorias.Count == 0 )
+        {
+            Console.WriteLine("Nenhuma vistoria registrada até o momento.");
+        }
+        else
+        {
+            foreach (Veiculo veiculo in vistorias)
+            {
+                int pontuacaoObtida = motor.CalcularPontuacaoObtida(veiculo);
+                int pontuacaoMaxima = veiculo.VistoriaRealizada.Count * 10;
+                double percentual = motor.CalcularPercentualAprovacao(veiculo);
+                string classificacao = motor.ClassificarVeiculo(percentual);
+
+                Console.WriteLine($"\n--- {veiculo.Marca} {veiculo.Modelo} ({veiculo.Ano}) ---");
+                Console.WriteLine($"Pontuação: {pontuacaoObtida} de {pontuacaoMaxima} pontos possíveis");
+                Console.WriteLine($"Percentual de aprovação: {percentual}%");
+                Console.WriteLine($"Classificação: {classificacao}");
+
+                List<ItemVistoria> criticos = motor.ObterItensCriticos(veiculo);
+                List<ItemVistoria> atencao = motor.ObterItensAtencao(veiculo);
+
+                if (criticos.Count > 0)
+                {
+                    Console.WriteLine("Itens criticos");
+                    foreach (ItemVistoria item in criticos)
+                    {
+                        Console.WriteLine(" - " + motor.GerarRecomendacao(item));
+                    }
+                }
+
+                if (atencao.Count > 0)
+                {
+                    Console.WriteLine("Itens de atenção");
+                    foreach (ItemVistoria item in atencao)
+                    {
+                        Console.WriteLine(" - " + motor.GerarRecomendacao(item));
+                    }
+                }
+                
+                if (criticos.Count == 0 && atencao.Count == 0)
+                {
+                    Console.WriteLine("Nenhuma pendência mecânica identificada. Veículo em boas condições.");
+                }
+            }
+        }
+    }
+    else if (opcao == "0")
+    {
+        continuar = false;
+    }
+    else
+    {
+        Console.WriteLine("Opção inválida.");
+    }
 }
+
+Console.WriteLine("Encerrando o AutoCheck. Até logo!");
