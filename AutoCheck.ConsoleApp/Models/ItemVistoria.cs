@@ -2,39 +2,43 @@ namespace AutoCheck.ConsoleApp.Models;
 
 public class ItemVistoria
 {
-    private string _status;
-
     public string Nome { get; set; }
-
-    public string Status
-    {
-        get => _status;
-        set
-        {
-            string valor = value.Trim();
-
-            if (string.Equals(valor, "Bom", StringComparison.OrdinalIgnoreCase))
-            {
-                _status = "Bom";
-            }
-            else if (string.Equals(valor, "Regular", StringComparison.OrdinalIgnoreCase))
-            {
-                _status = "Regular";
-            }
-            else if (string.Equals(valor, "Ruim", StringComparison.OrdinalIgnoreCase))
-            {
-                _status = "Ruim";
-            }
-            else
-            {
-                throw new ArgumentException($"Status inválido: '{value}'. Use 'Bom', 'Regular' ou 'Ruim'.");
-            }
-        }
-    }
+    public string Status { get; private set; }
 
     public ItemVistoria(string nome, string status)
     {
         Nome = nome;
-        Status = status;
+
+        if (!StatusEhValido(status))
+        {
+            throw new ArgumentException($"Status inválido: '{status}'. Use 'Bom', 'Regular' ou 'Ruim'.");
+        }
+
+        string valorMaiusculo = status.Trim().ToUpper();
+
+        if (valorMaiusculo == "BOM")
+        {
+            Status = "Bom";
+        }
+        else if (valorMaiusculo == "REGULAR")
+        {
+            Status = "Regular";
+        }
+        else
+        {
+            Status = "Ruim";
+        }
+    }
+
+    public static bool StatusEhValido(string valor)
+    {
+        string valorMaiusculo = valor.Trim().ToUpper();
+
+        if (valorMaiusculo == "BOM" || valorMaiusculo == "REGULAR" || valorMaiusculo == "RUIM")
+        {
+            return true;
+        }
+
+        return false;
     }
 }
