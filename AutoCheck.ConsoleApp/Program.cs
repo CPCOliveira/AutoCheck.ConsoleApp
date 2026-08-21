@@ -1,6 +1,40 @@
 ﻿using AutoCheck.ConsoleApp.Models;
 using AutoCheck.ConsoleApp.Services;
 
+int LerInteiro(string mensagem)
+{
+    Console.Write(mensagem);
+    string texto = Console.ReadLine();
+    bool valido = int.TryParse(texto, out int valor);
+
+    while (!valido)
+    {
+        Console.WriteLine("Valor inválido. Por favor, digite novamente.");
+        Console.Write(mensagem);
+        texto = Console.ReadLine();
+        valido = int.TryParse(texto, out valor);
+    }
+
+    return valor;
+}
+
+double LerDecimal(string mensagem)
+{
+    Console.Write(mensagem);
+    string texto = Console.ReadLine();
+    bool valido = double.TryParse(texto, out double valor);
+
+    while (!valido)
+    {
+        Console.WriteLine("Valor inválido. Por favor, digite novamente.");
+        Console.Write(mensagem);
+        texto = Console.ReadLine();
+        valido = double.TryParse(texto, out valor);
+    }
+
+    return valor;
+}
+
 List<Veiculo> vistorias = new List<Veiculo>();
 MotorVistoria motor = new MotorVistoria();
 
@@ -26,32 +60,25 @@ while (continuar)
         Console.Write("Modelo: ");
         string modelo = Console.ReadLine();
 
-        Console.Write("Ano: ");
-        int ano = int.Parse(Console.ReadLine());
-
-        Console.Write("Quilometragem: ");
-        double quilometragem = double.Parse(Console.ReadLine());
+        int ano = LerInteiro("Ano: ");
+        double quilometragem = LerDecimal("Quilometragem: ");
 
         Veiculo veiculo = null;
 
         if (tipo == "CARRO")
         {
-            Console.Write("Quantidade de portas: ");
-            int portas = int.Parse(Console.ReadLine());
+            int portas = LerInteiro("Quantidade de portas: ");
             veiculo = new Carro(marca, modelo, ano, quilometragem, portas);
         }
         else if (tipo == "MOTO")
         {
-            Console.Write("Cilindradas: ");
-            int cilindradas = int.Parse(Console.ReadLine());
+            int cilindradas = LerInteiro("Cilindradas: ");
             veiculo = new Moto(marca, modelo, ano, quilometragem, cilindradas);
         }
         else if (tipo == "CAMINHAO")
         {
-            Console.Write("Capacidade de carga (toneladas): ");
-            double capacidadeCarga = double.Parse(Console.ReadLine());
-            Console.Write("Quantidade de eixos: ");
-            int eixos = int.Parse(Console.ReadLine());
+            double capacidadeCarga = LerDecimal("Capacidade de carga (toneladas): ");
+            int eixos = LerInteiro("Quantidade de eixos: ");
             veiculo = new Caminhao(marca, modelo, ano, quilometragem, capacidadeCarga, eixos);
         }
         else
@@ -77,8 +104,8 @@ while (continuar)
                     {
                         Console.WriteLine("Avaliação inválida. Por favor, digite 'Bom', 'Regular' ou 'Ruim'.");
                     }
-                }while (!statusValido);
-                
+                } while (!statusValido);
+
                 veiculo.AdicionarItemVistoriado(item, status);
             }
 
@@ -88,7 +115,7 @@ while (continuar)
     }
     else if (opcao == "2")
     {
-        if (vistorias.Count == 0 )
+        if (vistorias.Count == 0)
         {
             Console.WriteLine("Nenhuma vistoria registrada até o momento.");
         }
@@ -126,7 +153,7 @@ while (continuar)
                         Console.WriteLine(" - " + motor.GerarRecomendacao(item));
                     }
                 }
-                
+
                 if (criticos.Count == 0 && atencao.Count == 0)
                 {
                     Console.WriteLine("Nenhuma pendência mecânica identificada. Veículo em boas condições.");
