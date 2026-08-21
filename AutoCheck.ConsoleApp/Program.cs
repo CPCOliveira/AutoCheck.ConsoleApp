@@ -18,7 +18,7 @@ while (continuar)
     if (opcao == "1")
     {
         Console.Write("Tipo de veículo (Carro, Moto, Caminhao): ");
-        string tipo = Console.ReadLine();
+        string tipo = Console.ReadLine().Trim().ToUpper();
 
         Console.Write("Marca: ");
         string marca = Console.ReadLine();
@@ -34,19 +34,19 @@ while (continuar)
 
         Veiculo veiculo = null;
 
-        if (tipo == "Carro")
+        if (tipo == "CARRO")
         {
             Console.Write("Quantidade de portas: ");
             int portas = int.Parse(Console.ReadLine());
             veiculo = new Carro(marca, modelo, ano, quilometragem, portas);
         }
-        else if (tipo == "Moto")
+        else if (tipo == "MOTO")
         {
             Console.Write("Cilindradas: ");
             int cilindradas = int.Parse(Console.ReadLine());
             veiculo = new Moto(marca, modelo, ano, quilometragem, cilindradas);
         }
-        else if (tipo == "Caminhao")
+        else if (tipo == "CAMINHAO")
         {
             Console.Write("Capacidade de carga (toneladas): ");
             double capacidadeCarga = double.Parse(Console.ReadLine());
