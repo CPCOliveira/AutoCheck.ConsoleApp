@@ -63,8 +63,22 @@ while (continuar)
         {
             foreach (string item in veiculo.ObterChecklistObrigatorio())
             {
-                Console.Write($"Status do item '{item}' (Bom/Regular/Ruim): ");
-                string status = Console.ReadLine();
+                string status;
+                bool statusValido;
+
+                do
+                {
+                    Console.Write($"Status do item '{item}' (Bom, Regular, Ruim): ");
+                    status = Console.ReadLine();
+
+                    statusValido = ItemVistoria.StatusEhValido(status);
+
+                    if (!statusValido)
+                    {
+                        Console.WriteLine("Avaliação inválida. Por favor, digite 'Bom', 'Regular' ou 'Ruim'.");
+                    }
+                }while (!statusValido);
+                
                 veiculo.AdicionarItemVistoriado(item, status);
             }
 
